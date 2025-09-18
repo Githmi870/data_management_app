@@ -1,27 +1,25 @@
-import 'package:data_management_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/loading_button.dart';
-import 'signup_screen.dart';
 // import '../utils/validators.dart';
 // import '../services/auth_services.dart';
 // import '../models/user.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
 
-  void _handleLogin() async {
+  void _handleSignUp() async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -45,23 +43,22 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       return;
     }
+
+    
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('lib/assets/images/LOGO1.png', height: 100),
             Text(
-              'Welcome Back !',
+              'Sign Up Here',
               style: GoogleFonts.lato(
                 textStyle: const TextStyle(
-                  color: Colors.black,
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
@@ -78,36 +75,6 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _passwordController,
               isPassword: true,
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SignupScreen()));
-              },
-              child: Text(
-                'Forgot Password?',
-                style: TextStyle(
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SignupScreen()));
-              },
-              child: Text(
-                'Create an Account',
-                style: TextStyle(
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
             if (_errorMessage != null) ...[
               const SizedBox(height: 16),
               Text(
@@ -117,13 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
             const SizedBox(height: 24),
             LoadingButton(
-              text: 'Login',
+              text: 'Sign Up',
               isLoading: _isLoading,
-              onPressed: () => {
-                _handleLogin(),
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()))
-              },
+              onPressed: _handleSignUp
             ),
           ],
         ),
