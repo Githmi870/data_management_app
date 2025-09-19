@@ -65,12 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Handle button press
-              },
-              child: const Text('Get Started'),
-            ),
           ],
         ),
       ),
