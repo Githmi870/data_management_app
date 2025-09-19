@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(width: 130),
+                SizedBox(width: 100),
                 Icon(Icons.wifi, size: 30, color: Colors.green),
                 SizedBox(width: 10),
                 CircleAvatar(
@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Container(
-                        width: 200,
+                        width: 190,
                         height: 80,
                         padding: const EdgeInsets.all(16),
                         child: Row(
@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Container(
-                        width: 200,
+                        width: 190,
                         height: 80,
                         padding: const EdgeInsets.all(16),
                         child: Row(
@@ -189,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Container(
-                        width: 200,
+                        width: 190,
                         height: 80,
                         padding: const EdgeInsets.all(16),
                         child: Row(
@@ -232,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Container(
-                        width: 200,
+                        width: 190,
                         height: 80,
                         padding: const EdgeInsets.all(16),
                         child: Row(
