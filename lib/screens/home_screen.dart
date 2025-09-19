@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(width: 150),
+                SizedBox(width: 130),
                 Icon(Icons.wifi, size: 30, color: Colors.green),
                 SizedBox(width: 10),
                 CircleAvatar(
