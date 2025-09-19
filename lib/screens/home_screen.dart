@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,6 +12,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.black,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -28,10 +29,49 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      backgroundColor: Colors.white,
       body: Center(
-        child: Text(
-          'Home Screen',
-          style: GoogleFonts.lato(fontSize: 24),
+        child: Column(          
+          children: [
+            SizedBox(height: 20,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.data_usage,
+                  size: 50,
+                  color: Colors.blue,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  'CivicData Core',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+                SizedBox(width: 100),
+                CircleAvatar(
+                  radius: 25, // Adjust size
+                  backgroundColor: Colors.blueGrey, // Circle color
+                  child: Icon(
+                    Icons.person,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Handle button press
+              },
+              child: const Text('Get Started'),
+            ),
+          ],
         ),
       ),
     );

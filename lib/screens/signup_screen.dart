@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../widgets/custom_text_field.dart';
-import '../widgets/loading_button.dart';
 // import '../utils/validators.dart';
 // import '../services/auth_services.dart';
 // import '../models/user.dart';
@@ -44,7 +42,11 @@ class _SignupScreenState extends State<SignupScreen> {
       return;
     }
 
-    
+    // Add sign up logic here
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -55,6 +57,34 @@ class _SignupScreenState extends State<SignupScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset('lib/assets/images/LOGO1.png', height: 100),
+                const SizedBox(height: 20),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Icon(
+                  Icons.data_usage,
+                  size: 50,
+                  color: Colors.blue,
+                ),
+                SizedBox(width: 10),
+                Text(
+                  'CivicData Core',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+              ],
+            ),
             Text(
               'Sign Up Here',
               style: GoogleFonts.lato(
@@ -65,15 +95,21 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
             const SizedBox(height: 32),
-            CustomTextField(
-              hintText: 'Username',
+            TextField(
               controller: _usernameController,
+              decoration: const InputDecoration(
+                hintText: 'Username',
+                border: OutlineInputBorder(),
+              ),
             ),
             const SizedBox(height: 16),
-            CustomTextField(
-              hintText: 'Password',
+            TextField(
               controller: _passwordController,
-              isPassword: true,
+              obscureText: true,
+              decoration: const InputDecoration(
+                hintText: 'Password',
+                border: OutlineInputBorder(),
+              ),
             ),
             if (_errorMessage != null) ...[
               const SizedBox(height: 16),
@@ -83,10 +119,22 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ],
             const SizedBox(height: 24),
-            LoadingButton(
-              text: 'Sign Up',
-              isLoading: _isLoading,
-              onPressed: _handleSignUp
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _handleSignUp,
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : const Text('Sign Up'),
+              ),
             ),
           ],
         ),
