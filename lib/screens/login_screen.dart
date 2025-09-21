@@ -40,50 +40,55 @@ class _LoginScreenState extends State<LoginScreen> {
       });
       return;
     }
+
+    // Simulate login delay
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 50),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Column(
               children: [
+                const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: const [
-                    Icon(
-                      Icons.data_usage,
-                      size: 50,
-                      color: Colors.blue,
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      'CivicData Core',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 42,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                  children: [
+                    const Icon(Icons.data_usage, size: 50, color: Colors.blue),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: Text(
+                        'CivicData Core',
+                        style: GoogleFonts.jetBrainsMono(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
                   ],
                 ),
+                const SizedBox(height: 20),
                 Text(
-                  'Welcome Back !',
-                  style: GoogleFonts.lato(
-                    textStyle: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  'Welcome Back!',
+                  style: GoogleFonts.jetBrainsMono(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -93,6 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: 'Username',
                     border: OutlineInputBorder(),
                   ),
+                  style: GoogleFonts.jetBrainsMono(),
                 ),
                 const SizedBox(height: 16),
                 TextField(
@@ -102,32 +108,39 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: 'Password',
                     border: OutlineInputBorder(),
                   ),
+                  style: GoogleFonts.jetBrainsMono(),
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignupScreen()));
-                  },
-                  child: const Text(
-                    'Forgot Password?',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      decoration: TextDecoration.underline,
+                            builder: (context) => const SignupScreen()),
+                      );
+                    },
+                    child: Text(
+                      'Forgot Password?',
+                      style: GoogleFonts.jetBrainsMono(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignupScreen()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignupScreen()),
+                    );
                   },
-                  child: const Text(
+                  child: Text(
                     'Create an Account',
-                    style: TextStyle(
+                    style: GoogleFonts.jetBrainsMono(
                       color: Colors.blue,
                       decoration: TextDecoration.underline,
                     ),
@@ -137,37 +150,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
                   Text(
                     _errorMessage!,
-                    style: const TextStyle(color: Colors.red),
+                    style: GoogleFonts.jetBrainsMono(color: Colors.red),
                   ),
                 ],
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () {
-                            _handleLogin();
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomeScreen()));
-                          },
+                    onPressed: _isLoading ? null : _handleLogin,
                     child: _isLoading
                         ? const SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
-                        : const Text('Login'),
+                        : Text(
+                            'Login',
+                            style: GoogleFonts.jetBrainsMono(fontSize: 16),
+                          ),
                   ),
                 ),
               ],
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );
