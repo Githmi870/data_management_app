@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'newproject_screen.dart';
+import 'newform_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,16 +43,22 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Icon(Icons.description),
             label: 'Create Form',
             onTap: () {
-              // Navigate or show dialog for creating form
-              
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => const NewFormScreen())
+              );
             },
           ),
           SpeedDialChild(
             child: Icon(Icons.work),
             label: 'Create Project',
             onTap: () {
-              // Navigate or show dialog for creating project
-              
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const NewProjectScreen()),
+              );
             },
           ),
         ],
