@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,6 +29,30 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: 'Settings'),
+        ],
+      ),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.description),
+            label: 'Create Form',
+            onTap: () {
+              // Navigate or show dialog for creating form
+              
+            },
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.work),
+            label: 'Create Project',
+            onTap: () {
+              // Navigate or show dialog for creating project
+              
+            },
+          ),
         ],
       ),
       body: SafeArea(
@@ -107,7 +132,271 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   );
                 }).toList(),
-              )
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Recent Forms',
+                              style: GoogleFonts.jetBrainsMono(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Housing Survey\nChief Secretariat',
+                                        style: GoogleFonts.jetBrainsMono(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Icon(
+                                      Icons.play_arrow,
+                                      size: 30,
+                                      color: Colors.green,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Housing Survey\nChief Secretariat',
+                                        style: GoogleFonts.jetBrainsMono(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Icon(
+                                      Icons.play_arrow,
+                                      size: 30,
+                                      color: Colors.green,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Housing Survey\nChief Secretariat',
+                                        style: GoogleFonts.jetBrainsMono(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Icon(
+                                      Icons.play_arrow,
+                                      size: 30,
+                                      color: Colors.green,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Pending Uploads',
+                              style: GoogleFonts.jetBrainsMono(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Housing Survey\nChief Secretariat',
+                                        style: GoogleFonts.jetBrainsMono(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      '10 Responses',
+                                      style: GoogleFonts.jetBrainsMono(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Icon(
+                                      Icons.upload,
+                                      size: 30,
+                                      color: Colors.red,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Housing Survey\nChief Secretariat',
+                                        style: GoogleFonts.jetBrainsMono(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      '10 Responses',
+                                      style: GoogleFonts.jetBrainsMono(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Icon(
+                                      Icons.upload,
+                                      size: 30,
+                                      color: Colors.red,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        'Housing Survey\nChief Secretariat',
+                                        style: GoogleFonts.jetBrainsMono(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      '10 Responses',
+                                      style: GoogleFonts.jetBrainsMono(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Icon(
+                                      Icons.upload,
+                                      size: 30,
+                                      color: Colors.red,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
