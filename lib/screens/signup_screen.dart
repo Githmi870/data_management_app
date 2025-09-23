@@ -82,7 +82,8 @@ class _SignupScreenState extends State<SignupScreen> {
       if (usernameExists) {
         setState(() {
           _isLoading = false;
-          _errorMessage = 'Username already exists. Please choose a different username.';
+          _errorMessage =
+              'Username already exists. Please choose a different username.';
         });
         return;
       }
@@ -95,18 +96,18 @@ class _SignupScreenState extends State<SignupScreen> {
 
       // Insert user into database
       int userId = await _databaseHelper.insertUser(newUser);
-      
+
       if (userId > 0) {
         // Success - show success message and clear form
         setState(() {
           _isLoading = false;
           _errorMessage = null;
         });
-        
+
         // Clear the form
         _usernameController.clear();
         _passwordController.clear();
-        
+
         // Show success dialog
         _showSuccessDialog('Account created successfully! User ID: $userId');
       } else {
@@ -137,12 +138,13 @@ class _SignupScreenState extends State<SignupScreen> {
             style: GoogleFonts.jetBrainsMono(),
           ),
           actions: [
+            // In _showSuccessDialog, after showing success:
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                'OK',
-                style: GoogleFonts.jetBrainsMono(color: Colors.blue),
-              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+                Navigator.pop(context); // Go back to login
+              },
+              child: Text('Continue to Login'),
             ),
           ],
         );
@@ -224,13 +226,21 @@ class _SignupScreenState extends State<SignupScreen> {
                             width: 24,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
                         : Text(
                             'Sign Up',
                             style: GoogleFonts.jetBrainsMono(fontSize: 16),
                           ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context), // Go back to login
+                  child: Text(
+                    'Already have an account? Sign In',
+                    style: GoogleFonts.jetBrainsMono(color: Colors.blue),
                   ),
                 ),
               ],

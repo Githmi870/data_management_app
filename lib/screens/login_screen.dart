@@ -1,7 +1,10 @@
 import 'package:data_management_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 import 'signup_screen.dart';
+import '../database/database_helper.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -15,6 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
+
+  // Hash password function (same as signup)
+  String _hashPassword(String password) {
+    var bytes = utf8.encode(password);
+    var digest = sha256.convert(bytes);
+    return digest.toString();
+  }
 
   void _handleLogin() async {
     setState(() {
@@ -41,17 +51,36 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    // Simulate login delay
-    await Future.delayed(const Duration(seconds: 2));
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
+    try {
+      final dbHelper = DatabaseHelper();
+      final user = await dbHelper.getUserByUsername(username);
+      
+      // Hash the entered password and compare with stored hashed password
+      final hashedPassword = _hashPassword(password);
+      
+      if (user == null || user.password != hashedPassword) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Invalid username or password.';
+        });
+        return;
+      } else {
+        // Login successful
+        setState(() {
+          _isLoading = false;
+        });
+        
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'An error occurred during login: $e';
+      });
+    }
   }
 
   @override
@@ -118,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>  SignupScreen()),
+                            builder: (context) => SignupScreen()),
                       );
                     },
                     child: Text(
@@ -135,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>  SignupScreen()),
+                          builder: (context) => SignupScreen()),
                     );
                   },
                   child: Text(
@@ -180,5 +209,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }
