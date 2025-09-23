@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const SignupScreen()),
+                            builder: (context) =>  SignupScreen()),
                       );
                     },
                     child: Text(
@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const SignupScreen()),
+                          builder: (context) =>  SignupScreen()),
                     );
                   },
                   child: Text(
