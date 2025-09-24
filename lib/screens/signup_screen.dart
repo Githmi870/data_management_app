@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
-import '../models/user.dart';
-import '../database/database_helper.dart';
+import '../controllers/signup_controller.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -15,142 +12,37 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final DatabaseHelper _databaseHelper = DatabaseHelper();
+
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Hash password function
-  String _hashPassword(String password) {
-    var bytes = utf8.encode(password);
-    var digest = sha256.convert(bytes);
-    return digest.toString();
-  }
+  final SignupController _signupController = SignupController();
 
-  void _handleSignUp() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+void _handleSignUp() {
+  setState(() {
+    _isLoading = true;
+    _errorMessage = null;
+  });
 
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text;
-
-    // Validation
-    if (username.isEmpty) {
+  _signupController.handleSignUp(
+    context: context,
+    username: _usernameController.text.trim(),
+    password: _passwordController.text,
+    onError: (message) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Username cannot be empty.';
+        _errorMessage = message;
       });
-      return;
-    }
-
-    if (username.length < 3) {
+    },
+    onSuccess: () {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Username must be at least 3 characters.';
       });
-      return;
-    }
-
-    if (username.length > 20) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Username must be less than 20 characters.';
-      });
-      return;
-    }
-
-    if (password.isEmpty) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Password cannot be empty.';
-      });
-      return;
-    }
-
-    if (password.length < 6) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Password must be at least 6 characters.';
-      });
-      return;
-    }
-
-    try {
-      // Check if username already exists
-      bool usernameExists = await _databaseHelper.usernameExists(username);
-      if (usernameExists) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage =
-              'Username already exists. Please choose a different username.';
-        });
-        return;
-      }
-
-      // Create new user
-      User newUser = User(
-        username: username,
-        password: _hashPassword(password),
-      );
-
-      // Insert user into database
-      int userId = await _databaseHelper.insertUser(newUser);
-
-      if (userId > 0) {
-        // Success - show success message and clear form
-        setState(() {
-          _isLoading = false;
-          _errorMessage = null;
-        });
-
-        // Clear the form
-        _usernameController.clear();
-        _passwordController.clear();
-
-        // Show success dialog
-        _showSuccessDialog('Account created successfully! User ID: $userId');
-      } else {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = 'Failed to create account. Please try again.';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'An error occurred: $e';
-      });
-    }
-  }
-
-  void _showSuccessDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            'Success',
-            style: GoogleFonts.jetBrainsMono(fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            message,
-            style: GoogleFonts.jetBrainsMono(),
-          ),
-          actions: [
-            // In _showSuccessDialog, after showing success:
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
-                Navigator.pop(context); // Go back to login
-              },
-              child: Text('Continue to Login'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+      _usernameController.clear();
+      _passwordController.clear();
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +129,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
                 TextButton(
-                  onPressed: () => Navigator.pop(context), // Go back to login
+                  onPressed: () => Navigator.pop(context),
                   child: Text(
                     'Already have an account? Sign In',
                     style: GoogleFonts.jetBrainsMono(color: Colors.blue),

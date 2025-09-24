@@ -1,29 +1,23 @@
 class User {
-  int? id;
-  String username;
-  String password;
+  final int? userId;
+  final String username;
+  final String password;
 
-  User({
-    this.id,
-    required this.username,
-    required this.password,
-  });
+  User({this.userId, required this.username, required this.password});
 
-  // Convert User to Map for database insertion
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'username': username,
-      'password': password,
+      'UserId': userId,
+      'Username': username,
+      'Password': password,
     };
   }
 
-  // Create User from Map
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'],
-      username: map['username'],
-      password: map['password'],
+      userId: map['UserId'],
+      username: map['Username'],
+      password: map['Password'],
     );
   }
 }

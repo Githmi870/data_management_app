@@ -1,10 +1,8 @@
 import 'package:data_management_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:crypto/crypto.dart';
-import 'dart:convert';
 import 'signup_screen.dart';
-import '../database/database_helper.dart';
+import '../controllers/login_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,15 +14,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final LoginController _loginController = LoginController();
+
   bool _isLoading = false;
   String? _errorMessage;
-
-  // Hash password function (same as signup)
-  String _hashPassword(String password) {
-    var bytes = utf8.encode(password);
-    var digest = sha256.convert(bytes);
-    return digest.toString();
-  }
 
   void _handleLogin() async {
     setState(() {
@@ -35,50 +28,26 @@ class _LoginScreenState extends State<LoginScreen> {
     final username = _usernameController.text.trim();
     final password = _passwordController.text;
 
-    if (username.isEmpty) {
+    if (username.isEmpty || password.isEmpty) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Username cannot be empty.';
+        _errorMessage = 'Username and password cannot be empty.';
       });
       return;
     }
 
-    if (password.isEmpty) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Password cannot be empty.';
-      });
-      return;
-    }
+    final result = await _loginController.login(username, password);
 
-    try {
-      final dbHelper = DatabaseHelper();
-      final user = await dbHelper.getUserByUsername(username);
-      
-      // Hash the entered password and compare with stored hashed password
-      final hashedPassword = _hashPassword(password);
-      
-      if (user == null || user.password != hashedPassword) {
-        setState(() {
-          _isLoading = false;
-          _errorMessage = 'Invalid username or password.';
-        });
-        return;
-      } else {
-        // Login successful
-        setState(() {
-          _isLoading = false;
-        });
-        
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      }
-    } catch (e) {
+    if (result == null) {
+      setState(() => _isLoading = false);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'An error occurred during login: $e';
+        _errorMessage = result;
       });
     }
   }
