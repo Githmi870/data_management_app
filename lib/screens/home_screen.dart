@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'newproject_screen.dart';
+import 'project_screen.dart';
+import 'form_screen.dart';
+import 'response_screen.dart';
+import 'draft_screen.dart';
 import 'newform_screen.dart';
+import 'login_screen.dart';
+import '../widgets/wifi_status_icon.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,12 +18,58 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Map<String, dynamic>> _cards = [
-    {'icon': Icons.folder, 'label': 'Total Projects', 'count': 0},
-    {'icon': Icons.file_copy, 'label': 'Total Forms', 'count': 0},
-    {'icon': Icons.bar_chart, 'label': 'Total Responses', 'count': 0},
-    {'icon': Icons.drafts, 'label': 'Drafts', 'count': 0},
-  ];
+  late List<Map<String, dynamic>> _cards;
+
+  @override
+  void initState() {
+    super.initState();
+    _cards = [
+      {
+        'icon': Icons.folder,
+        'label': 'Total Projects',
+        'count': 0,
+        'onclick': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProjectScreen()),
+          );
+        }
+      },
+      {
+        'icon': Icons.file_copy,
+        'label': 'Total Forms',
+        'count': 0,
+        'onclick': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const FormScreen()),
+          );
+        }
+      },
+      {
+        'icon': Icons.bar_chart,
+        'label': 'Total Responses',
+        'count': 0,
+        'onclick': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ResponseScreen()),
+          );
+        }
+      },
+      {
+        'icon': Icons.drafts,
+        'label': 'Drafts',
+        'count': 0,
+        'onclick': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DraftScreen()),
+          );
+        }
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,10 +96,9 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Create Form',
             onTap: () {
               Navigator.push(
-                context, 
-                MaterialPageRoute(
-                  builder: (context) => const NewFormScreen())
-              );
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const NewFormScreen()));
             },
           ),
           SpeedDialChild(
@@ -82,12 +133,36 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  const Icon(Icons.wifi, size: 30, color: Colors.green),
+                  WifiStatusIcon(),
                   const SizedBox(width: 10),
-                  const CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.blueGrey,
-                    child: Icon(Icons.person, size: 20, color: Colors.white),
+                  InkWell(
+                    onTap: () async {
+                      final selected = await showMenu<String>(
+                        context: context,
+                        position: RelativeRect.fromLTRB(
+                            1000, 80, 0, 0), // Adjust position as needed
+                        items: [
+                          const PopupMenuItem<String>(
+                            value: 'login',
+                            child: Text('Logout'),
+                          ),
+                          // Add more menu items here if needed
+                        ],
+                      );
+
+                      if (selected == 'login') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()),
+                        );
+                      }
+                    },
+                    child: const CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.blueGrey,
+                      child: Icon(Icons.person, size: 20, color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -111,31 +186,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: _cards.map((card) {
-                  return Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(card['icon'], size: 20, color: Colors.blue),
-                          const SizedBox(width: 5),
-                          Flexible(
-                            child: Text(
-                              '${card['label']} (${card['count']})',
-                              style: GoogleFonts.jetBrainsMono(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: card['count'] == 0
-                                    ? Colors.red
-                                    : Colors.black,
+                  return InkWell(
+                    onTap: card['onclick'] as VoidCallback,
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(card['icon'], size: 20, color: Colors.blue),
+                            const SizedBox(width: 5),
+                            Flexible(
+                              child: Text(
+                                '${card['label']} (${card['count']})',
+                                style: GoogleFonts.jetBrainsMono(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: card['count'] == 0
+                                      ? Colors.red
+                                      : Colors.black,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );

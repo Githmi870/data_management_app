@@ -52,6 +52,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
+                        const SizedBox(height: 20),
                         TextFormField(
                           decoration: const InputDecoration(
                             labelText: 'Project Name',
@@ -67,7 +68,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                         const SizedBox(height: 20),
                         TextFormField(
                           decoration: const InputDecoration(
-                            labelText: 'Project Title',
+                            labelText: 'Project Name',
                             border: OutlineInputBorder(),
                           ),
                         ),
@@ -85,10 +86,43 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                           child: DropdownMenu(
                             dropdownMenuEntries: const [
                               DropdownMenuEntry(
-                                  value: 'new', label: 'New Project'),
+                                  value: 'edu', label: 'Education Department'),
+                              DropdownMenuEntry(
+                                  value: 'agri', label: 'Agricultural Department'),
+                              DropdownMenuEntry(
+                                  value: 'fish', label: 'Fishery Department'),
+                            ],
+                            label: const Text('Department'),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: DropdownMenu(
+                            dropdownMenuEntries: const [
+                              DropdownMenuEntry(
+                                  value: 'admin', label: 'Administration'),
+                              DropdownMenuEntry(
+                                  value: 'acc', label: 'Accounting'),
+                              DropdownMenuEntry(
+                                  value: 'dev', label: 'Development'),
+                            ],
+                            label: const Text('Sector'),
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: DropdownMenu(
+                            dropdownMenuEntries: const [
+                              DropdownMenuEntry(
+                                  value: 'new',
+                                  label: 'New Project'),
                               DropdownMenuEntry(
                                   value: 'continuous',
-                                  label: 'Continuous Project'),
+                                  label: 'Canceled Project'),
                               DropdownMenuEntry(
                                   value: 'completed',
                                   label: 'Completed Project'),
@@ -115,6 +149,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                             labelText: 'Finished Date',
                             border: OutlineInputBorder(),
                             suffixIcon: Icon(Icons.calendar_today),
+                            helperText: 'Leave empty for New Projects',
                           ),
                           readOnly: true,
                           onTap: () => _selectDate(context),
@@ -122,9 +157,7 @@ class _NewProjectScreenState extends State<NewProjectScreen> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              // Handle form submission
-                            }
+                            
                           },
                           child: const Text('Create Project'),
                         ),
