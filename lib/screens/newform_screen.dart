@@ -1,49 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'response_collection_screen.dart';
 
 enum QuestionType { text, checkbox, multipleChoice, dropdown }
 
 class QuestionField {
   final QuestionType type;
   final TextEditingController controller;
-  final List<String> options; // For multiple choice and dropdown
-  final List<bool> checkboxValues; // For checkbox
+  String label;
+  final List<String> options;
+  final List<bool> checkboxValues;
+  String? selectedDropdownValue;
 
   QuestionField.text()
       : type = QuestionType.text,
         controller = TextEditingController(),
+        label = '',
         options = [],
-        checkboxValues = [];
+        checkboxValues = [],
+        selectedDropdownValue = null;
 
   QuestionField.checkbox()
       : type = QuestionType.checkbox,
         controller = TextEditingController(),
+        label = '',
         options = [],
-        checkboxValues = [false];
+        checkboxValues = [false],
+        selectedDropdownValue = null;
 
   QuestionField.multipleChoice()
       : type = QuestionType.multipleChoice,
         controller = TextEditingController(),
+        label = '',
         options = ['Option 1', 'Option 2'],
-        checkboxValues = [];
+        checkboxValues = [],
+        selectedDropdownValue = null;
 
   QuestionField.dropdown()
       : type = QuestionType.dropdown,
         controller = TextEditingController(),
+        label = '',
         options = ['Option 1', 'Option 2'],
-        checkboxValues = [];
+        checkboxValues = [],
+        selectedDropdownValue = null;
+}
+
+class SavedQuestion {
+  final QuestionType type;
+  final String question;
+  final List<String> options;
+
+  SavedQuestion({
+    required this.type,
+    required this.question,
+    required this.options,
+  });
+}
+
+class CreatedForm {
+  final String projectName;
+  final List<SavedQuestion> questions;
+  final DateTime createdAt;
+
+  CreatedForm({
+    required this.projectName,
+    required this.questions,
+    required this.createdAt,
+  });
 }
 
 class NewFormScreen extends StatefulWidget {
   const NewFormScreen({super.key});
 
   @override
-  _NewFormScreenState createState() => _NewFormScreenState();
+  NewFormScreenState createState() => NewFormScreenState();
 }
 
-class _NewFormScreenState extends State<NewFormScreen> {
+class NewFormScreenState extends State<NewFormScreen> {
   final List<QuestionField> _fields = [];
+  String? _selectedProject;
 
   void _addField(QuestionType type) {
     setState(() {
@@ -73,29 +109,114 @@ class _NewFormScreenState extends State<NewFormScreen> {
 
   String _saveField(int index) {
     final field = _fields[index];
-    String text = 'Question ${index + 1}: ';
+    String text = '';
+
     switch (field.type) {
       case QuestionType.text:
-        text = field.controller.text;
+        text = 'Text Question: ${field.controller.text}';
         break;
       case QuestionType.checkbox:
-        text = field.checkboxValues.toString();
+        text =
+            'Checkbox Question: ${field.controller.text}, Checked: ${field.checkboxValues[0]}';
         break;
       case QuestionType.multipleChoice:
-        text = field.options.toString();
+        text =
+            'Multiple Choice: ${field.controller.text}, Options: ${field.options.join(", ")}';
         break;
       case QuestionType.dropdown:
-        text = field.options.toString();
+        text =
+            'Dropdown: ${field.controller.text}, Options: ${field.options.join(", ")}';
+        if (field.selectedDropdownValue != null) {
+          text += ', Selected: ${field.selectedDropdownValue}';
+        }
         break;
     }
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('Saved: $text')),
     );
     return text;
   }
 
+  void _createForm() {
+    if (_fields.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please add at least one question')),
+      );
+      return;
+    }
+
+    // Convert fields to saved questions
+    List<SavedQuestion> savedQuestions = _fields.map((field) {
+      return SavedQuestion(
+        type: field.type,
+        question: field.controller.text.isEmpty
+            ? 'Untitled Question'
+            : field.controller.text,
+        options: List.from(field.options),
+      );
+    }).toList();
+
+    // Create the form object
+    CreatedForm createdForm = CreatedForm(
+      projectName: _selectedProject ?? 'Untitled Project',
+      questions: savedQuestions,
+      createdAt: DateTime.now(),
+    );
+
+    // Show success dialog
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green, size: 28),
+            SizedBox(width: 8),
+            Text('Form Created!'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Your form has been created successfully.'),
+            SizedBox(height: 16),
+            Text(
+              'Project: ${createdForm.projectName}',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text('Questions: ${createdForm.questions.length}'),
+            SizedBox(height: 16),
+            Text('Would you like to start collecting responses?'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Later'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResponseCollectionScreen(
+                    form: createdForm,
+                  ),
+                ),
+              );
+            },
+            child: Text('Start Collecting'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildField(int index, String text) {
     final field = _fields[index];
+
     switch (field.type) {
       case QuestionType.text:
         return TextFormField(
@@ -129,22 +250,51 @@ class _NewFormScreenState extends State<NewFormScreen> {
               controller: field.controller,
               decoration: InputDecoration(labelText: '$text ${index + 1}'),
             ),
+            SizedBox(height: 16),
             ...field.options.asMap().entries.map((entry) {
               int optIdx = entry.key;
               String opt = entry.value;
-              return Row(
+              return Column(
                 children: [
-                  Radio<int>(
-                    value: optIdx,
-                    groupValue: null,
-                    onChanged: (_) {},
+                  Row(
+                    children: [
+                      Icon(Icons.radio_button_unchecked),
+                      SizedBox(width: 8),
+                      Flexible(
+                        child: TextFormField(
+                          initialValue: opt,
+                          decoration: InputDecoration(
+                              labelText: 'Option ${optIdx + 1}'),
+                          onChanged: (val) {
+                            setState(() {
+                              field.options[optIdx] = val;
+                            });
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          setState(() {
+                            field.options.removeAt(optIdx);
+                          });
+                        },
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: Text(opt),
-                  ),
+                  SizedBox(height: 16),
                 ],
               );
             }),
+            TextButton.icon(
+              icon: Icon(Icons.add),
+              label: Text('Add Option'),
+              onPressed: () {
+                setState(() {
+                  field.options.add('Option ${field.options.length + 1}');
+                });
+              },
+            ),
           ],
         );
       case QuestionType.dropdown:
@@ -155,15 +305,73 @@ class _NewFormScreenState extends State<NewFormScreen> {
               controller: field.controller,
               decoration: InputDecoration(labelText: '$text ${index + 1}'),
             ),
+            SizedBox(height: 16),
             DropdownButton<String>(
-              value: field.options.first,
+              value: field.selectedDropdownValue,
+              hint: Text('Select an option'),
+              isExpanded: true,
               items: field.options
                   .map((opt) => DropdownMenuItem(value: opt, child: Text(opt)))
                   .toList(),
-              onChanged: (val) {},
+              onChanged: (val) {
+                setState(() {
+                  field.selectedDropdownValue = val;
+                });
+              },
+            ),
+            SizedBox(height: 16),
+            ...field.options.asMap().entries.map((entry) {
+              int optIdx = entry.key;
+              String opt = entry.value;
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          initialValue: opt,
+                          decoration: InputDecoration(
+                              labelText: 'Option ${optIdx + 1}'),
+                          onChanged: (val) {
+                            setState(() {
+                              field.options[optIdx] = val;
+                              if (field.selectedDropdownValue == opt) {
+                                field.selectedDropdownValue = val;
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          setState(() {
+                            if (field.selectedDropdownValue == opt) {
+                              field.selectedDropdownValue = null;
+                            }
+                            field.options.removeAt(optIdx);
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16),
+                ],
+              );
+            }),
+            TextButton.icon(
+              icon: Icon(Icons.add),
+              label: Text('Add Option'),
+              onPressed: () {
+                setState(() {
+                  field.options.add('Option ${field.options.length + 1}');
+                });
+              },
             ),
           ],
         );
+      default:
+        return SizedBox.shrink();
     }
   }
 
@@ -194,14 +402,29 @@ class _NewFormScreenState extends State<NewFormScreen> {
                       children: [
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: DropdownMenu(dropdownMenuEntries: const [
-                            DropdownMenuEntry(
-                                value: 'option1', label: 'Option 1'),
-                            DropdownMenuEntry(
-                                value: 'option2', label: 'Option 2'),
-                            DropdownMenuEntry(
-                                value: 'option3', label: 'Option 3'),
-                          ], label: Text('Select Project')),
+                          child: DropdownButton<String>(
+                            value: _selectedProject,
+                            hint: Text('Select Project'),
+                            items: const [
+                              DropdownMenuItem(
+                                value: 'option1',
+                                child: Text('Option 1'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'option2',
+                                child: Text('Option 2'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'option3',
+                                child: Text('Option 3'),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedProject = value;
+                              });
+                            },
+                          ),
                         ),
                         const SizedBox(height: 16.0),
                         Text(
@@ -224,7 +447,8 @@ class _NewFormScreenState extends State<NewFormScreen> {
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(child: _buildField(index, 'Question')),
+                                    Expanded(
+                                        child: _buildField(index, 'Question')),
                                     IconButton(
                                       icon: Icon(Icons.save),
                                       onPressed: () => _saveField(index),
@@ -259,7 +483,8 @@ class _NewFormScreenState extends State<NewFormScreen> {
                             SpeedDialChild(
                               child: const Icon(Icons.radio_button_checked),
                               label: 'Multiple Choice',
-                              onTap: () => _addField(QuestionType.multipleChoice),
+                              onTap: () =>
+                                  _addField(QuestionType.multipleChoice),
                             ),
                             SpeedDialChild(
                               child: const Icon(Icons.list),
@@ -270,9 +495,7 @@ class _NewFormScreenState extends State<NewFormScreen> {
                         ),
                         const SizedBox(height: 25),
                         ElevatedButton(
-                          onPressed: () {
-                            // Handle form submission
-                          },
+                          onPressed: _createForm,
                           child: const Text('Create Form'),
                         ),
                       ],
